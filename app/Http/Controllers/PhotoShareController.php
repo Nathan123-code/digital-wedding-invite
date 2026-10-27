@@ -51,6 +51,20 @@ class PhotoShareController extends Controller
         return to_route('invite.gallery')->with('success', 'Your photo or video has been shared.');
     }
 
+    public function destroyAll(): RedirectResponse
+    {
+        $disk = Storage::disk('public');
+        $mediaFiles = $disk->allFiles('wedding-gallery');
+
+        if ($mediaFiles === []) {
+            return back()->with('success', 'Photo Share is already empty.');
+        }
+
+        $disk->delete($mediaFiles);
+
+        return back()->with('success', count($mediaFiles).' Photo Share file(s) deleted.');
+    }
+
     public function export(): BinaryFileResponse|RedirectResponse
     {
         $disk = Storage::disk('public');

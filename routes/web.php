@@ -44,6 +44,7 @@ Route::middleware(RequireAdminAuthentication::class)->prefix('admin')->name('adm
     Route::post('/upload', [WeddingInviteAdminController::class, 'upload'])->name('upload');
     Route::delete('/assets/{assetType}', [WeddingInviteAdminController::class, 'deleteAsset'])->name('assets.destroy');
     Route::get('/photo-share/export', [PhotoShareController::class, 'export'])->name('photo-share.export');
+    Route::delete('/photo-share', [PhotoShareController::class, 'destroyAll'])->name('photo-share.destroy-all');
     Route::post('/logout', [WeddingInviteAdminController::class, 'logout'])->name('logout');
     Route::get('/guests', [GuestManagementController::class, 'index'])->name('guests.index');
     Route::post('/guests', [GuestManagementController::class, 'store'])->name('guests.store');

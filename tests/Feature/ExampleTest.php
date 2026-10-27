@@ -120,3 +120,17 @@ test('an authenticated admin can export shared photo media', function () {
     $response->assertOk()
         ->assertDownload('photo-share-export-'.now()->format('Y-m-d-His').'.zip');
 });
+
+test('an authenticated admin can delete all shared photo media', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('wedding-gallery/photo.jpg', 'photo content');
+    Storage::disk('public')->put('wedding-gallery/video.mp4', 'video content');
+
+    $response = $this->withSession(['admin_authenticated' => true])
+        ->delete('/admin/photo-share');
+
+    $response->assertRedirect()
+        ->assertSessionHas('success', '2 Photo Share file(s) deleted.');
+    Storage::disk('public')->assertMissing('wedding-gallery/photo.jpg');
+    Storage::disk('public')->assertMissing('wedding-gallery/video.mp4');
+});

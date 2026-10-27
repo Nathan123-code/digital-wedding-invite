@@ -46,6 +46,11 @@
                     <h2>Photo Share Backup</h2>
                     <p>Download all guest photos and videos as a ZIP file. The ZIP also includes a manifest with the file details.</p>
                     <a class="admin-link" href="{{ route('admin.photo-share.export') }}">Download Photo Share ZIP</a>
+                    <form action="{{ route('admin.photo-share.destroy-all') }}" method="POST" onsubmit="return confirm('Delete all shared photos and videos? This action cannot be undone.');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="admin-link danger-link" type="submit">Delete All Photo Share Media</button>
+                    </form>
                 </section>
 
                 <section class="admin-asset admin-event-settings">
