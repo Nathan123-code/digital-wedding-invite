@@ -21,6 +21,13 @@
                 >
                 <div class="search-results" data-search-results aria-live="polite"></div>
             </div>
+
+            <div class="wedding-hashtag">
+                <p>Capture your special moments and share them with</p>
+                <a href="#theWillofJulia" data-copy-hashtag="#theWillofJulia">
+                    <strong>#theWillofJulia</strong>
+                </a>
+            </div>
         </div>
 
     </section>

@@ -9,14 +9,24 @@
         <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;500;600;700&family=Parisienne&display=swap" rel="stylesheet">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body>
+    <body style="background-image: url('{{ asset('images/wedding-background.png') }}');">
+        <div
+            class="opening-screen"
+            data-opening-screen
+            style="background-image: linear-gradient(rgba(18, 30, 26, 0.18), rgba(18, 30, 26, 0.18)), url('{{ asset('images/wedding-background.png') }}');"
+        >
+            <div class="opening-card">
+                <p class="opening-kicker">Welcome to the wedding of</p>
+                <div class="opening-names">
+                    {{ $eventSettings->bride_name ?? 'Wedding' }} &amp; {{ $eventSettings->groom_name ?? 'Invite' }}
+                </div>
+                <button class="opening-button" type="button" data-open-invitation>
+                    Open Invitation
+                </button>
+            </div>
+        </div>
+
         <div class="page-shell">
-            <a class="admin-login-link" href="{{ route('admin.login') }}">Admin Login</a>
-
-            <button class="theme-toggle" aria-label="Toggle theme">
-                <span>◐</span>
-            </button>
-
             @include('partials.wedding-invite-navigation')
 
             <main class="invite-sections">

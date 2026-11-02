@@ -1,6 +1,86 @@
 const guestSearch = document.querySelector('[data-guest-search]');
 const searchResults = document.querySelector('[data-search-results]');
 const autoUploadInput = document.querySelector('[data-auto-upload]');
+const copyHashtagButton = document.querySelector('[data-copy-hashtag]');
+const openingScreen = document.querySelector('[data-opening-screen]');
+const openInvitationButton = document.querySelector('[data-open-invitation]');
+const invitationOpenedKey = 'wedding-invitation-opened';
+const pageTransitionLinks = document.querySelectorAll('[data-page-transition]');
+
+document.body.classList.remove('page-exiting');
+
+if (openingScreen && openInvitationButton) {
+    if (sessionStorage.getItem(invitationOpenedKey) === 'true') {
+        openingScreen.remove();
+    } else {
+        document.body.classList.add('invitation-locked');
+        openInvitationButton.focus();
+    }
+
+    openInvitationButton.addEventListener('click', () => {
+        sessionStorage.setItem(invitationOpenedKey, 'true');
+        openingScreen.classList.add('is-opening');
+        document.body.classList.add('invitation-opening');
+
+        window.setTimeout(() => {
+            openingScreen.remove();
+            document.body.classList.remove('invitation-locked', 'invitation-opening');
+        }, 700);
+    });
+}
+
+pageTransitionLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+        if (
+            event.defaultPrevented ||
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey ||
+            link.target === '_blank' ||
+            link.href === window.location.href
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+        document.body.classList.add('page-exiting');
+
+        window.setTimeout(() => {
+            window.location.assign(link.href);
+        }, 260);
+    });
+});
+
+if (copyHashtagButton) {
+    copyHashtagButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+
+        const hashtag = copyHashtagButton.dataset.copyHashtag;
+
+        if (!hashtag) {
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(hashtag);
+        } catch {
+            const fallbackInput = document.createElement('textarea');
+            fallbackInput.value = hashtag;
+            fallbackInput.setAttribute('readonly', '');
+            fallbackInput.style.position = 'fixed';
+            fallbackInput.style.opacity = '0';
+            document.body.append(fallbackInput);
+            fallbackInput.select();
+            document.execCommand('copy');
+            fallbackInput.remove();
+        }
+
+        copyHashtagButton.classList.add('copied');
+        window.setTimeout(() => copyHashtagButton.classList.remove('copied'), 1800);
+    });
+}
 
 if (autoUploadInput) {
     autoUploadInput.addEventListener('change', () => {
