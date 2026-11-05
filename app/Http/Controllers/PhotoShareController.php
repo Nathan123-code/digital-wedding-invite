@@ -65,6 +65,19 @@ class PhotoShareController extends Controller
         return back()->with('success', count($mediaFiles).' Photo Share file(s) deleted.');
     }
 
+    public function destroy(string $filename): RedirectResponse
+    {
+        $disk = Storage::disk('public');
+        $mediaPath = collect($disk->files('wedding-gallery'))
+            ->first(fn (string $path): bool => basename($path) === $filename);
+
+        abort_if($mediaPath === null, 404);
+
+        $disk->delete($mediaPath);
+
+        return back()->with('success', 'Photo Share file deleted.');
+    }
+
     public function export(): BinaryFileResponse|RedirectResponse
     {
         $disk = Storage::disk('public');

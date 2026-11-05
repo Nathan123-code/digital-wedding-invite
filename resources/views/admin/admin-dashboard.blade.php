@@ -51,6 +51,27 @@
                         @method('DELETE')
                         <button class="admin-link danger-link" type="submit">Delete All Photo Share Media</button>
                     </form>
+
+                    @if ($photoShareMedia->isNotEmpty())
+                        <div class="admin-photo-share-grid">
+                            @foreach ($photoShareMedia as $item)
+                                <div class="admin-photo-share-item">
+                                    @if ($item['type'] === 'video')
+                                        <video controls preload="metadata" aria-label="Shared wedding video">
+                                            <source src="{{ $item['url'] }}">
+                                        </video>
+                                    @else
+                                        <img src="{{ $item['url'] }}" alt="Shared wedding photo">
+                                    @endif
+                                    <form action="{{ route('admin.photo-share.destroy', $item['filename']) }}" method="POST" onsubmit="return confirm('Delete this Photo Share file? This action cannot be undone.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="admin-link danger-link" type="submit">Delete This File</button>
+                                    </form>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </section>
 
                 <section class="admin-asset admin-event-settings">

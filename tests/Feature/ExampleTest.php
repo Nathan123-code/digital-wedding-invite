@@ -134,3 +134,17 @@ test('an authenticated admin can delete all shared photo media', function () {
     Storage::disk('public')->assertMissing('wedding-gallery/photo.jpg');
     Storage::disk('public')->assertMissing('wedding-gallery/video.mp4');
 });
+
+test('an authenticated admin can delete one shared photo media file', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('wedding-gallery/photo.jpg', 'photo content');
+    Storage::disk('public')->put('wedding-gallery/other-photo.jpg', 'other photo content');
+
+    $response = $this->withSession(['admin_authenticated' => true])
+        ->delete('/admin/photo-share/photo.jpg');
+
+    $response->assertRedirect()
+        ->assertSessionHas('success', 'Photo Share file deleted.');
+    Storage::disk('public')->assertMissing('wedding-gallery/photo.jpg');
+    Storage::disk('public')->assertExists('wedding-gallery/other-photo.jpg');
+});

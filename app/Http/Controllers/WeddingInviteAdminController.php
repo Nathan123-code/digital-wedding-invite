@@ -44,10 +44,24 @@ class WeddingInviteAdminController extends Controller
 
     public function dashboard(): View
     {
+        $disk = Storage::disk('public');
+        $photoShareMedia = collect($disk->files('wedding-gallery'))
+            ->map(function (string $path) use ($disk): array {
+                $mimeType = $disk->mimeType($path) ?: '';
+
+                return [
+                    'filename' => basename($path),
+                    'url' => $disk->url($path),
+                    'type' => str_starts_with($mimeType, 'video/') ? 'video' : 'image',
+                ];
+            })
+            ->values();
+
         return view('admin.admin-dashboard', [
             'eventSettings' => EventSetting::current(),
             'floorPlanUrl' => $this->assetUrl('floor-plan'),
             'menuUrl' => $this->assetUrl('menu'),
+            'photoShareMedia' => $photoShareMedia,
         ]);
     }
 
