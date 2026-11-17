@@ -15,11 +15,11 @@
                         <h1>Event Admin</h1>
                     </div>
                     <div class="admin-actions">
-                        <a class="admin-link" href="{{ route('admin.guests.index') }}">Manage Guests</a>
-                        <a class="admin-link" href="{{ route('invite.seat') }}">Back to Guest Website</a>
+                        <a class="admin-button" href="{{ route('admin.guests.index') }}">Manage Guests</a>
+                        <a class="admin-button admin-button-secondary" href="{{ route('invite.seat') }}">Guest Website</a>
                         <form action="{{ route('admin.logout') }}" method="POST">
                             @csrf
-                            <button class="admin-link" type="submit">Sign Out</button>
+                            <button class="admin-button admin-button-secondary" type="submit">Sign Out</button>
                         </form>
                     </div>
                 </div>
@@ -43,14 +43,22 @@
                 <p>Upload one active image for each section. A new upload replaces the previous image.</p>
 
                 <section class="admin-asset admin-event-settings">
-                    <h2>Photo Share Backup</h2>
-                    <p>Download all guest photos and videos as a ZIP file. The ZIP also includes a manifest with the file details.</p>
-                    <a class="admin-link" href="{{ route('admin.photo-share.export') }}">Download Photo Share ZIP</a>
-                    <form action="{{ route('admin.photo-share.destroy-all') }}" method="POST" onsubmit="return confirm('Delete all shared photos and videos? This action cannot be undone.');">
-                        @csrf
-                        @method('DELETE')
-                        <button class="admin-link danger-link" type="submit">Delete All Photo Share Media</button>
-                    </form>
+                    <div class="admin-section-heading">
+                        <div>
+                            <h2>Photo Share Backup</h2>
+                            <p>Manage guest photos and videos, download a backup, or remove media for the next event.</p>
+                        </div>
+                        <span class="admin-section-count">{{ $photoShareMedia->count() }} file(s)</span>
+                    </div>
+
+                    <div class="admin-photo-share-actions">
+                        <a class="admin-button" href="{{ route('admin.photo-share.export') }}">Download ZIP Backup</a>
+                        <form action="{{ route('admin.photo-share.destroy-all') }}" method="POST" onsubmit="return confirm('Delete all shared photos and videos? This action cannot be undone.');">
+                            @csrf
+                            @method('DELETE')
+                            <button class="admin-button admin-button-danger" type="submit">Delete All Media</button>
+                        </form>
+                    </div>
 
                     @if ($photoShareMedia->isNotEmpty())
                         <div class="admin-photo-share-grid">
@@ -66,10 +74,15 @@
                                     <form action="{{ route('admin.photo-share.destroy', $item['filename']) }}" method="POST" onsubmit="return confirm('Delete this Photo Share file? This action cannot be undone.');">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="admin-link danger-link" type="submit">Delete This File</button>
+                                        <button class="admin-button admin-button-danger" type="submit">Delete This File</button>
                                     </form>
                                 </div>
                             @endforeach
+                        </div>
+                    @else
+                        <div class="admin-photo-share-empty">
+                            <strong>No shared media yet</strong>
+                            <span>Uploaded guest photos and videos will appear here.</span>
                         </div>
                     @endif
                 </section>
@@ -94,20 +107,22 @@
                                 <div class="admin-placeholder">No image uploaded yet.</div>
                             @endif
 
-                            <form action="{{ route('admin.upload') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <input name="asset_type" type="hidden" value="{{ $type }}">
-                                <input name="asset" type="file" accept="image/jpeg,image/png,image/webp" required>
-                                <button class="upload-submit" type="submit">Upload {{ $label }}</button>
-                            </form>
-
-                            @if (($type === 'floor-plan' ? $floorPlanUrl : $menuUrl))
-                                <form action="{{ route('admin.assets.destroy', $type) }}" method="POST" onsubmit="return confirm('Delete the current {{ $label }} image?');">
+                            <div class="admin-asset-actions">
+                                <form action="{{ route('admin.upload') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    @method('DELETE')
-                                    <button class="admin-link danger-link" type="submit">Delete Current {{ $label }}</button>
+                                    <input name="asset_type" type="hidden" value="{{ $type }}">
+                                    <input name="asset" type="file" accept="image/jpeg,image/png,image/webp" required>
+                                    <button class="upload-submit" type="submit">Upload {{ $label }}</button>
                                 </form>
-                            @endif
+
+                                @if (($type === 'floor-plan' ? $floorPlanUrl : $menuUrl))
+                                    <form action="{{ route('admin.assets.destroy', $type) }}" method="POST" onsubmit="return confirm('Delete the current {{ $label }} image?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="admin-button admin-button-danger" type="submit">Delete Current {{ $label }}</button>
+                                    </form>
+                                @endif
+                            </div>
                         </section>
                     @endforeach
                 </div>

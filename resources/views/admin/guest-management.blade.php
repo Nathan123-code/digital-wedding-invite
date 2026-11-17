@@ -15,8 +15,8 @@
                         <h1>Guest Management</h1>
                     </div>
                     <div class="admin-actions">
-                        <a class="admin-link" href="{{ route('admin.dashboard') }}">Back to Dashboard</a>
-                        <a class="admin-link" href="{{ route('invite.seat') }}">Guest Website</a>
+                        <a class="admin-button" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                        <a class="admin-button admin-button-secondary" href="{{ route('invite.seat') }}">Guest Website</a>
                     </div>
                 </div>
 
@@ -55,7 +55,7 @@
                     <form action="{{ route('admin.guests.destroy-all') }}" method="POST" onsubmit="return confirm('Delete all guests and seat assignments? This action cannot be undone.');">
                         @csrf
                         @method('DELETE')
-                        <button class="admin-link danger-link" type="submit">Delete All Guests</button>
+                        <button class="admin-button admin-button-danger" type="submit">Delete All Guests</button>
                     </form>
                 </section>
 
@@ -84,8 +84,8 @@
                                     <td><input form="guest-update-{{ $guest->id }}" name="table_name" type="text" value="{{ $guest->table_name ?: $guest->seat }}" required></td>
                                     <td><input form="guest-update-{{ $guest->id }}" name="seat_position" type="text" value="{{ $guest->seat_position }}" required></td>
                                     <td class="guest-actions">
-                                        <button class="admin-link" form="guest-update-{{ $guest->id }}" type="submit">Save</button>
-                                        <button class="admin-link danger-link" form="guest-delete-{{ $guest->id }}" type="submit">Delete</button>
+                                        <button class="admin-button admin-button-small" form="guest-update-{{ $guest->id }}" type="submit">Save</button>
+                                        <button class="admin-button admin-button-danger admin-button-small" form="guest-delete-{{ $guest->id }}" type="submit">Delete</button>
                                     </td>
                                 </tr>
                             @empty
